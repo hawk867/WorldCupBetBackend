@@ -1,0 +1,15 @@
+# Development profile.
+#
+# Defaults target the developer's local PostgreSQL container on port 5433.
+# Override any value via environment variables if your setup differs:
+#   DEV_DB_URL, DEV_DB_USERNAME, DEV_DB_PASSWORD
+#
+# The target database ("worldcupbet") must already exist on the server.
+# Create it once with:
+#   docker exec -it postgres14 psql -U danielesteban -d postgres \
+#     -c 'CREATE DATABASE worldcupbet;'
+spring:
+  datasource:
+    url: ${DEV_DB_URL:jdbc:postgresql://localhost:5433/worldcupbet}
+    username: ${DEV_DB_USERNAME:danielesteban}
+    password: ${DEV_DB_PASSWORD:danielesteban}

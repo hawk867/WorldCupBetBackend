@@ -1,0 +1,10 @@
+# Production profile.
+#
+# Every datasource value is required from the environment. Spring will fail
+# fast if any variable is missing, so misconfigured deployments do not
+# accidentally fall back to a local developer database.
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
