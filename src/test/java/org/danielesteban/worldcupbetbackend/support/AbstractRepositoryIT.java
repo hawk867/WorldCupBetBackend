@@ -1,10 +1,10 @@
 package org.danielesteban.worldcupbetbackend.support;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.danielesteban.worldcupbetbackend.persistence.JpaAuditingConfig;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase.Replace;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -13,11 +13,14 @@ import org.springframework.test.context.DynamicPropertySource;
  * <p>
  * Extending this class gives a test:
  * <ul>
- *   <li>A private, ephemeral PostgreSQL 16 database created on the shared
- *       test server (see {@link TestDatabase}) before the test class runs,
- *       and dropped afterward.</li>
+ *   <li>A single shared logical database ({@code wcbet_suite_test}) on the
+ *       developer-managed PostgreSQL server described by {@link TestDatabase}.
+ *       The database is created lazily by {@link SharedTestDatabase} and
+ *       reused by every test class in the suite; Spring's context cache can
+ *       therefore reuse the same ApplicationContext across classes.</li>
  *   <li>Flyway migrations applied automatically by Spring Boot on context
- *       startup.</li>
+ *       startup (thanks to {@code spring-boot-starter-flyway}, which
+ *       re-introduces Flyway auto-configuration in Spring Boot 4).</li>
  *   <li>Hibernate configured with {@code ddl-auto: validate}, so the test
  *       fails fast if an entity mapping drifts from the migration schema.</li>
  *   <li>Automatic transaction rollback between tests via {@code @DataJpaTest}
@@ -43,32 +46,14 @@ import org.springframework.test.context.DynamicPropertySource;
         "spring.flyway.baseline-on-migrate=false"
 })
 @AutoConfigureTestDatabase(replace = Replace.NONE)
+@Import(JpaAuditingConfig.class)
 public abstract class AbstractRepositoryIT {
-
-    /**
-     * Ephemeral database for the current test class. A single database is
-     * shared by every test method in the class (and reset between tests by
-     * the {@code @DataJpaTest} rollback), then dropped in {@link #dropDatabase()}.
-     */
-    private static TestDatabases.EphemeralDatabase database;
-
-    @BeforeAll
-    static void createDatabase() {
-        database = TestDatabases.createFreshDatabase();
-    }
-
-    @AfterAll
-    static void dropDatabase() {
-        if (database != null) {
-            TestDatabases.dropDatabase(database.name());
-            database = null;
-        }
-    }
 
     @DynamicPropertySource
     static void registerDatasourceProperties(DynamicPropertyRegistry registry) {
+        SharedTestDatabase.ensureCreated();
         registry.add("spring.datasource.url",
-                () -> TestDatabase.jdbcUrlFor(database.name()));
+                () -> TestDatabase.jdbcUrlFor(SharedTestDatabase.NAME));
         registry.add("spring.datasource.username", () -> TestDatabase.USER);
         registry.add("spring.datasource.password", () -> TestDatabase.PASSWORD);
         registry.add("spring.datasource.driver-class-name",
