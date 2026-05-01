@@ -48,7 +48,7 @@ import java.util.function.Function;
  * Each {@code @Test} carries the tag specified by the design so the property
  * suite can be filtered or grouped in CI reports.
  */
-class UniquenessProperties extends AbstractRepositoryIT {
+class UniquenessPropertiesTest extends AbstractRepositoryIT {
 
     /** Minimum number of examples per property; matches the design requirement. */
     private static final int TRIES = 100;
