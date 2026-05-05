@@ -13,3 +13,8 @@ spring:
     url: ${DEV_DB_URL:jdbc:postgresql://localhost:5433/worldcupbet}
     username: ${DEV_DB_USERNAME:danielesteban}
     password: ${DEV_DB_PASSWORD:danielesteban}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:dev-secret-key-change-this-in-production-min32chars}
+    expiration-ms: 86400000
