@@ -8,7 +8,6 @@ import org.danielesteban.worldcupbetbackend.persistence.repository.PredictionRep
 import org.danielesteban.worldcupbetbackend.persistence.repository.PredictionScoreRepository;
 import org.danielesteban.worldcupbetbackend.persistence.repository.UserScoreRepository;
 import org.danielesteban.worldcupbetbackend.service.dto.ScoreBreakdown;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ class ScoringServicePropertyTest {
             mock(PredictionRepository.class),
             mock(PredictionScoreRepository.class),
             mock(UserScoreRepository.class),
-            mock(SimpMessagingTemplate.class)
+            mock(RankingService.class)
     );
 
     private Match matchWithScore(int homeGoals, int awayGoals, boolean wentToPenalties,

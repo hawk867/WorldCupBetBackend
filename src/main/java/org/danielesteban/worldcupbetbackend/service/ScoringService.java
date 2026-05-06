@@ -9,7 +9,7 @@ import org.danielesteban.worldcupbetbackend.persistence.repository.UserScoreRepo
 import org.danielesteban.worldcupbetbackend.service.dto.ScoreBreakdown;
 import org.danielesteban.worldcupbetbackend.service.event.MatchAdjustedEvent;
 import org.danielesteban.worldcupbetbackend.service.event.MatchFinishedEvent;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,16 +25,16 @@ public class ScoringService {
     private final PredictionRepository predictionRepository;
     private final PredictionScoreRepository predictionScoreRepository;
     private final UserScoreRepository userScoreRepository;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final RankingService rankingService;
 
     public ScoringService(PredictionRepository predictionRepository,
                           PredictionScoreRepository predictionScoreRepository,
                           UserScoreRepository userScoreRepository,
-                          SimpMessagingTemplate messagingTemplate) {
+                          @Lazy RankingService rankingService) {
         this.predictionRepository = predictionRepository;
         this.predictionScoreRepository = predictionScoreRepository;
         this.userScoreRepository = userScoreRepository;
-        this.messagingTemplate = messagingTemplate;
+        this.rankingService = rankingService;
     }
 
     public ScoreBreakdown computeScore(Prediction prediction, Match match) {
@@ -132,8 +132,7 @@ public class ScoringService {
     }
 
     private void publishRanking() {
-        messagingTemplate.convertAndSend("/topic/ranking",
-                userScoreRepository.findAllByOrderByTotalPointsDescExactCountDesc());
+        rankingService.publishRanking();
     }
 
     private int countExact(Long userId) {
