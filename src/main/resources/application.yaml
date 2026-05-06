@@ -1,3 +1,11 @@
+football-data:
+  api:
+    base-url: https://api.football-data.org
+    key: ${FOOTBALL_DATA_API_KEY:demo-key}
+    competition-id: 2000
+    connection-timeout: 10000
+    read-timeout: 30000
+
 spring:
   application:
     name: WorldCupBetBackend
