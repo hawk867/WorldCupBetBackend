@@ -18,3 +18,5 @@ app:
   jwt:
     secret: ${JWT_SECRET:dev-secret-key-change-this-in-production-min32chars}
     expiration-ms: 86400000
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:4200}

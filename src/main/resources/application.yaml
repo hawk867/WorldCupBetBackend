@@ -1,3 +1,10 @@
+app:
+  jwt:
+    secret: ${JWT_SECRET:my-super-secret-key-for-development-only-change-in-production}
+    expiration-ms: 86400000
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:4200}
+
 football-data:
   api:
     base-url: https://api.football-data.org
