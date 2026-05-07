@@ -35,14 +35,14 @@ public class FootballDataClient {
             @Value("${football-data.api.base-url}") String baseUrl,
             @Value("${football-data.api.key}") String apiKey,
             @Value("${football-data.api.competition-id}") Integer competitionId,
-            @Value("${football-data.api.connection-timeout:10000}") int connectionTimeoutMs,
-            @Value("${football-data.api.read-timeout:30000}") int readTimeoutMs) {
+            @Value("${football-data.api.connection-timeout}") java.time.Duration connectionTimeout,
+            @Value("${football-data.api.read-timeout}") java.time.Duration readTimeout) {
 
         this.competitionId = competitionId;
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(java.time.Duration.ofMillis(connectionTimeoutMs));
-        requestFactory.setReadTimeout(java.time.Duration.ofMillis(readTimeoutMs));
+        requestFactory.setConnectTimeout(connectionTimeout);
+        requestFactory.setReadTimeout(readTimeout);
 
         this.restClient = RestClient.builder()
                 .baseUrl(baseUrl)
@@ -136,7 +136,11 @@ public class FootballDataClient {
                 homeGoals,
                 awayGoals,
                 homePenalties,
-                awayPenalties
+                awayPenalties,
+                null,
+                null,
+                null,
+                null
         );
     }
 

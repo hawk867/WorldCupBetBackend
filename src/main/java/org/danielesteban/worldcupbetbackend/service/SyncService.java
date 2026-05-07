@@ -7,7 +7,6 @@ import org.danielesteban.worldcupbetbackend.service.dto.ExternalMatchDto;
 import org.danielesteban.worldcupbetbackend.service.exception.ExternalApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -57,8 +56,11 @@ public class SyncService {
     /**
      * Main synchronization cycle executed every 60 seconds.
      * Only processes if there are LIVE matches or SCHEDULED matches with kickoff in the past.
+     *
+     * @deprecated Scheduling is now handled by {@code SyncScheduler} in the integration package.
+     *             This method is kept for backward compatibility but is no longer auto-scheduled.
      */
-    @Scheduled(fixedDelay = 60_000)
+    @Deprecated
     public void syncMatches() {
         try {
             List<Match> liveMatches = matchRepository.findAllByStatus(MatchStatus.LIVE);

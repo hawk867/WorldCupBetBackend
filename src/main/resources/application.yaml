@@ -10,8 +10,12 @@ football-data:
     base-url: https://api.football-data.org
     key: ${FOOTBALL_DATA_API_KEY:demo-key}
     competition-id: 2000
-    connection-timeout: 10000
-    read-timeout: 30000
+    connection-timeout: 10s
+    read-timeout: 30s
+    rate-limit: 10
+    max-retries: 3
+  seed:
+    on-startup: false
 
 spring:
   application:

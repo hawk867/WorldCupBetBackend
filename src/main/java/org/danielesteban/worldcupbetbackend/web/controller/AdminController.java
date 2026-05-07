@@ -3,6 +3,7 @@ package org.danielesteban.worldcupbetbackend.web.controller;
 import jakarta.validation.Valid;
 import org.danielesteban.worldcupbetbackend.domain.entity.AuditLog;
 import org.danielesteban.worldcupbetbackend.domain.entity.Match;
+import org.danielesteban.worldcupbetbackend.integration.DataSeeder;
 import org.danielesteban.worldcupbetbackend.service.AdminService;
 import org.danielesteban.worldcupbetbackend.service.MatchService;
 import org.danielesteban.worldcupbetbackend.service.ScoringService;
@@ -40,13 +41,16 @@ public class AdminController {
     private final AdminService adminService;
     private final MatchService matchService;
     private final ScoringService scoringService;
+    private final DataSeeder dataSeeder;
 
     public AdminController(AdminService adminService,
                            MatchService matchService,
-                           ScoringService scoringService) {
+                           ScoringService scoringService,
+                           DataSeeder dataSeeder) {
         this.adminService = adminService;
         this.matchService = matchService;
         this.scoringService = scoringService;
+        this.dataSeeder = dataSeeder;
     }
 
     @PostMapping("/users/upload")
@@ -106,6 +110,12 @@ public class AdminController {
             logs = adminService.getAuditLog();
         }
         return ResponseEntity.ok(logs.stream().map(this::toResponse).toList());
+    }
+
+    @PostMapping("/seed")
+    public ResponseEntity<DataSeeder.SeedResult> seed() {
+        DataSeeder.SeedResult result = dataSeeder.seedAll();
+        return ResponseEntity.ok(result);
     }
 
     private CsvUploadResultResponse toResponse(CsvUploadResult result) {
