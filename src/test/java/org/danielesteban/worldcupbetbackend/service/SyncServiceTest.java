@@ -90,7 +90,7 @@ class SyncServiceTest {
                 .awayGoals(0)
                 .build();
 
-        ExternalMatchDto externalDto = new ExternalMatchDto(100, "IN_PLAY", 2, 1, null, null);
+        ExternalMatchDto externalDto = new ExternalMatchDto(100, "IN_PLAY", 2, 1, null, null, null, null, null, null);
 
         when(matchRepository.findAllByStatus(MatchStatus.LIVE)).thenReturn(List.of(liveMatch));
         when(footballDataClient.fetchMatches()).thenReturn(List.of(externalDto));
@@ -111,7 +111,7 @@ class SyncServiceTest {
                 .awayGoals(1)
                 .build();
 
-        ExternalMatchDto externalDto = new ExternalMatchDto(100, "FINISHED", 2, 1, null, null);
+        ExternalMatchDto externalDto = new ExternalMatchDto(100, "FINISHED", 2, 1, null, null, null, null, null, null);
 
         when(matchRepository.findAllByStatus(MatchStatus.LIVE)).thenReturn(List.of(liveMatch));
         when(footballDataClient.fetchMatches()).thenReturn(List.of(externalDto));
@@ -133,7 +133,7 @@ class SyncServiceTest {
                 .awayGoals(0)
                 .build();
 
-        ExternalMatchDto externalDto = new ExternalMatchDto(100, "IN_PLAY", 1, 0, null, null);
+        ExternalMatchDto externalDto = new ExternalMatchDto(100, "IN_PLAY", 1, 0, null, null, null, null, null, null);
 
         when(matchRepository.findAllByStatus(MatchStatus.LIVE)).thenReturn(List.of(liveMatch));
         when(footballDataClient.fetchMatches()).thenReturn(List.of(externalDto));

@@ -8,6 +8,7 @@ import org.danielesteban.worldcupbetbackend.domain.entity.Team;
 import org.danielesteban.worldcupbetbackend.domain.entity.User;
 import org.danielesteban.worldcupbetbackend.domain.enums.MatchStatus;
 import org.danielesteban.worldcupbetbackend.domain.enums.UserRole;
+import org.danielesteban.worldcupbetbackend.integration.DataSeeder;
 import org.danielesteban.worldcupbetbackend.service.AdminService;
 import org.danielesteban.worldcupbetbackend.service.AuthService;
 import org.danielesteban.worldcupbetbackend.service.MatchService;
@@ -51,6 +52,9 @@ class AdminControllerTest {
 
     @MockitoBean
     private ScoringService scoringService;
+
+    @MockitoBean
+    private DataSeeder dataSeeder;
 
     @MockitoBean
     private AuthService authService;
