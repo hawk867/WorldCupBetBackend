@@ -1,7 +1,9 @@
 package org.danielesteban.worldcupbetbackend.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.danielesteban.worldcupbetbackend.domain.entity.UserScore;
 import org.danielesteban.worldcupbetbackend.persistence.repository.UserScoreRepository;
+import org.danielesteban.worldcupbetbackend.websocket.dto.RankingUpdateMessage;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Slf4j
 public class RankingService {
 
     private final UserScoreRepository userScoreRepository;
@@ -26,6 +29,12 @@ public class RankingService {
     }
 
     public void publishRanking() {
-        messagingTemplate.convertAndSend("/topic/ranking", getRanking());
+        try {
+            List<UserScore> ranking = getRanking();
+            RankingUpdateMessage message = RankingUpdateMessage.from(ranking);
+            messagingTemplate.convertAndSend("/topic/ranking", message);
+        } catch (Exception e) {
+            log.warn("Error publicando ranking: {}", e.getMessage());
+        }
     }
 }

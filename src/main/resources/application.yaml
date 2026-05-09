@@ -22,6 +22,9 @@ spring:
     name: WorldCupBetBackend
   profiles:
     default: dev
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
   datasource:
     driver-class-name: org.postgresql.Driver
     hikari:

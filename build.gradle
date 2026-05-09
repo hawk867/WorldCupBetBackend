@@ -45,6 +45,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.assertj:assertj-core'
     testImplementation "net.jqwik:jqwik:${jqwikVersion}"
+    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'

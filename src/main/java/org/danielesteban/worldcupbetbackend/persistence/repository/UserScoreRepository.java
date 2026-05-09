@@ -2,6 +2,7 @@ package org.danielesteban.worldcupbetbackend.persistence.repository;
 
 import org.danielesteban.worldcupbetbackend.domain.entity.UserScore;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -15,10 +16,10 @@ import java.util.List;
 public interface UserScoreRepository extends JpaRepository<UserScore, Long> {
 
     /**
-     * Returns the full leaderboard, sorted by {@code totalPoints} descending
-     * and then by {@code exactCount} descending to break ties. Backed by
-     * {@code idx_user_scores_ranking} so the query does not require a
-     * runtime sort.
+     * Returns the full leaderboard with user data eagerly fetched,
+     * sorted by {@code totalPoints} descending and then by {@code exactCount}
+     * descending to break ties.
      */
+    @Query("SELECT us FROM UserScore us JOIN FETCH us.user ORDER BY us.totalPoints DESC, us.exactCount DESC")
     List<UserScore> findAllByOrderByTotalPointsDescExactCountDesc();
 }

@@ -1,5 +1,6 @@
 package org.danielesteban.worldcupbetbackend.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.danielesteban.worldcupbetbackend.domain.entity.Match;
 import org.danielesteban.worldcupbetbackend.domain.enums.MatchStatus;
 import org.danielesteban.worldcupbetbackend.persistence.repository.MatchRepository;
@@ -7,6 +8,7 @@ import org.danielesteban.worldcupbetbackend.service.event.MatchAdjustedEvent;
 import org.danielesteban.worldcupbetbackend.service.event.MatchFinishedEvent;
 import org.danielesteban.worldcupbetbackend.service.exception.IllegalStateTransitionException;
 import org.danielesteban.worldcupbetbackend.service.exception.ResourceNotFoundException;
+import org.danielesteban.worldcupbetbackend.websocket.dto.MatchUpdateMessage;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Slf4j
 public class MatchService {
 
     private final MatchRepository matchRepository;
@@ -66,7 +69,7 @@ public class MatchService {
             eventPublisher.publishEvent(new MatchAdjustedEvent(matchId));
         }
 
-        messagingTemplate.convertAndSend("/topic/matches/" + matchId, match);
+        publishMatchUpdate(match);
         return match;
     }
 
@@ -75,7 +78,16 @@ public class MatchService {
         Match match = findById(matchId);
         match.setHomeGoals(homeGoals);
         match.setAwayGoals(awayGoals);
-        messagingTemplate.convertAndSend("/topic/matches/" + matchId, match);
+        publishMatchUpdate(match);
         return match;
+    }
+
+    private void publishMatchUpdate(Match match) {
+        try {
+            MatchUpdateMessage message = MatchUpdateMessage.from(match);
+            messagingTemplate.convertAndSend("/topic/matches/" + match.getId(), message);
+        } catch (Exception e) {
+            log.warn("Error publicando actualización de partido {}: {}", match.getId(), e.getMessage());
+        }
     }
 }

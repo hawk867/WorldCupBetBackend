@@ -6,6 +6,7 @@ import org.danielesteban.worldcupbetbackend.persistence.repository.MatchReposito
 import org.danielesteban.worldcupbetbackend.service.event.MatchAdjustedEvent;
 import org.danielesteban.worldcupbetbackend.service.event.MatchFinishedEvent;
 import org.danielesteban.worldcupbetbackend.service.exception.ResourceNotFoundException;
+import org.danielesteban.worldcupbetbackend.websocket.dto.MatchUpdateMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
@@ -58,7 +59,7 @@ class MatchServiceTest {
 
         matchService.transitionStatus(1L, MatchStatus.LIVE);
 
-        verify(messagingTemplate).convertAndSend(eq("/topic/matches/1"), any(Match.class));
+        verify(messagingTemplate).convertAndSend(eq("/topic/matches/1"), any(MatchUpdateMessage.class));
     }
 
     @Test
@@ -68,7 +69,7 @@ class MatchServiceTest {
 
         matchService.updateScore(1L, 2, 1);
 
-        verify(messagingTemplate).convertAndSend(eq("/topic/matches/1"), any(Match.class));
+        verify(messagingTemplate).convertAndSend(eq("/topic/matches/1"), any(MatchUpdateMessage.class));
     }
 
     @Test
